@@ -1,57 +1,58 @@
 var debug = require('debug')('kcapp-bot:main');
-var sleep = require('sleep');
+var decache = require('decache');
 
-var bot = require('./bot')(163);
-bot.new(bot.HARD);
-
-function doScore(socket) {
+function doScore(socket, bot) {
     var player = socket.currentPlayer;
     if (player.player_id === bot.id) {
-        sleep.msleep(500);
-
-        var thrown = 0;
-        while (thrown < 3) {
-            if (player.current_score > 170 || [169, 168, 166, 165, 163, 162, 159].includes(player.current_score)) {
-                var dart = bot.attemptThrow(20, 3);
-                socket.emitThrow(dart);
-                thrown++;
-            } else {
-                var darts = bot.attemptCheckout(player.current_score, thrown);
-                for (var i = 0; i < darts.length; i++) {
-                    var dart = darts[i];
-                    player.current_score -= dart.score * dart.multiplier;
+        setTimeout(() => {
+            var thrown = 0;
+            while (thrown < 3) {
+                console.log(thrown);
+                if (player.current_score > 170 || [169, 168, 166, 165, 163, 162, 159].includes(player.current_score)) {
+                    var dart = bot.attemptThrow(20, 3);
                     socket.emitThrow(dart);
-                    if (player.current_score <= 1) {
-                        break;
+                    thrown++;
+                } else {
+                    var darts = bot.attemptCheckout(player.current_score, thrown);
+                    for (var i = 0; i < darts.length; i++) {
+                        var dart = darts[i];
+                        player.current_score -= dart.score * dart.multiplier;
+                        socket.emitThrow(dart);
+                        if (player.current_score <= 1) {
+                            break;
+                        }
                     }
+                    thrown += darts.length;
                 }
-                thrown += darts.length;
             }
-        }
-        debug("Sending visit");
-        setTimeout(() => { socket.emitVisit(); }, 1500);
-    } else {
-        debug("Not my turn, waiting...");
+            setTimeout(() => { socket.emitVisit(); }, 1500);
+        }, 700);
     }
 }
 
-var kcapp = require('kcapp-sio-client/kcapp')("localhost", 3000);
-kcapp.connect(() => {
-    kcapp.on('new_match', (data) => {
-        var match = data.match;
-        var legId = match.current_leg_id;
-        debug(`Connected to match ${match.id}`);
+module.exports = (botId, sioURL, sioPort) => {
+    var bot = bot = require('./bot')(botId);
+    bot.new(bot.MEDIUM);
 
-        kcapp.connectLegNamespace(legId, (socket) => {
-            socket.on('score_update', (data) => {
-                var leg = data.leg;
-                if (leg.is_finished) {
-                    debug("Leg is finished");
-                    return;
-                }
-                doScore(socket);
+    return {
+        playLeg: (legId) => {
+            var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot');
+             // Modules are singletons, but we need as separate instance for each leg we connect to...
+            decache('kcapp-sio-client/kcapp');
+
+            kcapp.connectLegNamespace(legId, (socket) => {
+                debug(`kcapp-bot connected to leg ${legId}`);
+
+                socket.on('score_update', (data) => {
+                    var leg = data.leg;
+                    if (leg.is_finished) {
+                        debug("Leg is finished");
+                        return;
+                    }
+                    doScore(socket, bot);
+                });
+                doScore(socket, bot);
             });
-            doScore(socket);
-        });
-    });
-});
+        }
+     };
+};

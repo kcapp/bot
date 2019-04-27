@@ -152,6 +152,10 @@ function getRandom(list) {
     return parseInt(list[Math.floor(Math.random() * list.length)]);
 }
 
+/** Check if the two darts are equal
+ * @param {object} - First dart
+ * @param {object} - Second dart
+ */
 function isEqual(dart1, dart2) {
     return dart1.score === dart2.score && dart1.multiplier === dart2.multiplier;
 }
@@ -180,6 +184,10 @@ function getAdjacent(list, idx, number) {
     return newList;
 }
 
+/**
+ * Check if we are successful with the given percentage
+ * @param {int} targetPercentage - Percetage chance we are successful
+ */
 function isSuccessful(targetPercentage) {
     return Math.random() < targetPercentage;
 }
@@ -223,6 +231,12 @@ exports.attemptThrow = (number, multiplier) => {
     return { score: score, multiplier: multiplier };
 }
 
+/**
+ * Attempt to checkout based on the current score
+ *
+ * @param {int} - Current score
+ * @param {int} - Number of darts thrown
+ */
 exports.attemptCheckout = (currentScore, thrown) => {
     var darts = [];
     if (currentScore > 40) {
@@ -268,6 +282,10 @@ exports.attemptCheckout = (currentScore, thrown) => {
     return darts;
 }
 
+/**
+ * Create a new bot with the given skill
+ * @param {int} - Skill level of the bot
+ */
 exports.new = (skill) => {
     var hitrateSingle = 0.70;
     var hitrateDouble = 0.13;
