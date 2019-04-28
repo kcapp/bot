@@ -7,7 +7,6 @@ function doScore(socket, bot) {
         setTimeout(() => {
             var thrown = 0;
             while (thrown < 3) {
-                console.log(thrown);
                 if (player.current_score > 170 || [169, 168, 166, 165, 163, 162, 159].includes(player.current_score)) {
                     var dart = bot.attemptThrow(20, 3);
                     socket.emitThrow(dart);
@@ -37,9 +36,8 @@ module.exports = (botId, sioURL, sioPort) => {
     return {
         playLeg: (legId) => {
             var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot');
-             // Modules are singletons, but we need as separate instance for each leg we connect to...
+             // Make sure we get a separate instance for each leg we connect to...
             decache('kcapp-sio-client/kcapp');
-
             kcapp.connectLegNamespace(legId, (socket) => {
                 debug(`kcapp-bot connected to leg ${legId}`);
 
