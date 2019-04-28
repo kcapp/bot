@@ -6,7 +6,7 @@ function doScore(socket, bot) {
     if (player.player_id === bot.id) {
         setTimeout(() => {
             var thrown = 0;
-            while (thrown < 3) {
+            while (thrown < 3&& player.current_score > 1) {
                 if (player.current_score > 170 || [169, 168, 166, 165, 163, 162, 159].includes(player.current_score)) {
                     var dart = bot.attemptThrow(20, 3);
                     socket.emitThrow(dart);
