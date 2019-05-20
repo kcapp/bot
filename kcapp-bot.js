@@ -1,14 +1,20 @@
 var debug = require('debug')('kcapp-bot:main');
 var decache = require('decache');
 
-function doScore(socket, bot) {
+function sleep(ms){
+    return new Promise(resolve => { setTimeout(resolve, ms) });
+}
+
+async function doScore(socket, bot) {
     var player = socket.currentPlayer;
     if (player.player_id === bot.id) {
+        await sleep(3000);
         var thrown = 0;
         while (thrown < 3 && player.current_score > 0) {
             if (player.current_score > 170 || [169, 168, 166, 165, 163, 162, 159].includes(player.current_score)) {
                 var dart = bot.attemptThrow(20, 3);
                 socket.emitThrow(dart);
+                await sleep(1000);
                 thrown++;
             } else {
                 var darts = bot.attemptCheckout(player.current_score, thrown);
@@ -16,6 +22,7 @@ function doScore(socket, bot) {
                     var dart = darts[i];
                     player.current_score -= dart.score * dart.multiplier;
                     socket.emitThrow(dart);
+                    await sleep(1000);
                     if (player.current_score <= 1) {
                         break;
                     }
@@ -23,7 +30,8 @@ function doScore(socket, bot) {
                 thrown += darts.length;
             }
         }
-        setTimeout(() => { socket.emitVisit(); }, 2000);
+        await sleep(500);
+        socket.emitVisit();
     }
 }
 
@@ -43,18 +51,17 @@ module.exports = (botId, sioURL, sioPort) => {
                     var leg = data.leg;
                     if (leg.is_finished) {
                         return;
-                    }
-                    setTimeout(() => {
+                    } else if (leg.current_player_id !== botId) {
+                        debug("Not our turn, waiting...");
+                    } else {
                         doScore(socket, bot);
-                    }, 700);
+                    }
                 });
                 socket.on('leg_finished', (data) => {
                     debug('Leg is finished');
                     socket.disconnect();
                 });
-                setTimeout(() => {
-                    doScore(socket, bot);
-                }, 700);
+                doScore(socket, bot);
             });
         }
      };
