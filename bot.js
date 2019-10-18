@@ -41,7 +41,7 @@ const CHECKOUT_GUIDE = {
     144: [{ score: 20, multiplier: TRIPLE }, { score: 20, multiplier: TRIPLE }, { score: 12, multiplier: DOUBLE }],
     143: [{ score: 20, multiplier: TRIPLE }, { score: 17, multiplier: TRIPLE }, { score: 16, multiplier: DOUBLE }],
     142: [{ score: 20, multiplier: TRIPLE }, { score: 14, multiplier: TRIPLE }, { score: 20, multiplier: DOUBLE }],
-    141: [{ score: 20, multiplier: TRIPLE }, { score: 15, multiplier: TRIPLE }, { score: 18, multiplier: DOUBLE }],
+    141: [{ score: 20, multiplier: TRIPLE }, { score: 19, multiplier: TRIPLE }, { score: 12, multiplier: DOUBLE }],
     140: [{ score: 20, multiplier: TRIPLE }, { score: 16, multiplier: TRIPLE }, { score: 16, multiplier: DOUBLE }],
     139: [{ score: 20, multiplier: TRIPLE }, { score: 13, multiplier: TRIPLE }, { score: 20, multiplier: DOUBLE }],
     138: [{ score: 20, multiplier: TRIPLE }, { score: 16, multiplier: TRIPLE }, { score: 15, multiplier: DOUBLE }],
