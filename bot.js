@@ -301,7 +301,7 @@ exports.score = async (socket) => {
     var player = socket.currentPlayer;
     var thrown = 0;
     while (thrown < 3 && player.current_score > 0) {
-        if (player.current_score > 170 || BOGEY_NUMBERS.includes(player.current_score)) {
+        if (player.current_score > 170 || this.BOGEY_NUMBERS.includes(player.current_score)) {
             var dart = this.attemptThrow(20, 3);
             socket.emitThrow(dart);
             await sleep(100);
