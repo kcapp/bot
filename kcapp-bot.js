@@ -1,6 +1,5 @@
 var debug = require('debug')('kcapp-bot:main');
 var decache = require('decache');
-var skill = require('./bot-skill');
 var sleep = require('./sleep');
 
 async function doScore(socket, bot) {
@@ -13,9 +12,9 @@ async function doScore(socket, bot) {
     }
 }
 
-module.exports = (botId, botSkill, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
+module.exports = (botId, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
     return {
-        playLeg: (legId) => {
+        playLeg: (legId, botSkill) => {
             var bot = require('./bot')(botId, botSkill);
 
             var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot');

@@ -361,9 +361,9 @@ exports.setup = (botSkill) => {
     }
 
     this.hitrates = {
-        SINGLE: hitrateSingle,
-        DOUBLE: hitrateDouble,
-        TRIPLE: hitrateTriple,
+        1: hitrateSingle,
+        2: hitrateDouble,
+        3: hitrateTriple,
         missRange: missRange
     }
     debug(`Configured "${botSkill.name}" bot with ${JSON.stringify(this.hitrates)}`);
