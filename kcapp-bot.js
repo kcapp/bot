@@ -13,10 +13,10 @@ async function doScore(socket, bot) {
     }
 }
 
-module.exports = (botId, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
+module.exports = (botId, botSkill, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
     return {
         playLeg: (legId) => {
-            var bot = require('./bot')(botId, skill.MEDIUM);
+            var bot = require('./bot')(botId, botSkill);
 
             var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot');
              // Make sure we get a separate instance for each leg we connect to...

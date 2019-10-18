@@ -228,7 +228,9 @@ exports.attemptThrow = (number, multiplier) => {
             multiplier = getRandom(getAdjacent(BOARD_MULTIPLIERS, BOARD_MULTIPLIERS.indexOf(multiplier), 1));
         }
     }
-    return { score: score, multiplier: multiplier };
+    var dart = { score: score, multiplier: multiplier };
+    debug(`Throw ${JSON.stringify(dart)}`);
+    return dart;
 }
 
 /**

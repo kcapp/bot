@@ -27,16 +27,33 @@ exports.getVisit = () => {
 }
 
 /**
+ * Get the correct dart to throw
+ * @param {object} - Visit
+ * @param {int} - Number of darts thrown
+ */
+exports.attemptThrow = (visit, dartsThrown) => {
+    var dart = { score: visit.first_dart.value, multiplier: visit.first_dart.multiplier };
+    if (dartsThrown === 1) {
+        dart = { score: visit.second_dart.value, multiplier: visit.second_dart.multiplier };
+    } else if (dartsThrown == 2) {
+        dart = { score: visit.third_dart.value, multiplier: visit.third_dart.multiplier };
+    }
+    debug(`Throw ${JSON.stringify(dart)}`);
+    return dart;
+}
+
+/**
  * Score a visit
  * @param {object} - Socket for scoring
  */
 exports.score = async (socket) => {
     var visit = this.getVisit();
-    socket.emitThrow({ score: visit.first_dart.value, multiplier: visit.first_dart.multiplier });
+    debug(`Throw ${JSON.stringify(dart)}`);
+    socket.emitThrow(this.attemptThrow(visit, 0));
     await sleep(100);
-    socket.emitThrow({ score: visit.second_dart.value, multiplier: visit.second_dart.multiplier });
+    socket.emitThrow(this.attemptThrow(visit, 1));
     await sleep(100);
-    socket.emitThrow({ score: visit.third_dart.value, multiplier: visit.third_dart.multiplier });
+    socket.emitThrow(this.attemptThrow(visit, 2));
     await sleep(100);
 }
 
