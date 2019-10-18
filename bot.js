@@ -1,9 +1,9 @@
 var debug = require('debug')('kcapp-bot:bot');
+var skill = require('./bot-skill');
+var sleep = require('./sleep');
 
-exports.EASY = 1;
-exports.MEDIUM = 2;
-exports.HARD = 3;
-exports.PERFECT = 4;
+/** Array of Bogey numbers */
+exports.BOGEY_NUMBERS = [169, 168, 166, 165, 163, 162, 159];
 
 const SINGLE = 1;
 const DOUBLE = 2;
@@ -292,35 +292,64 @@ exports.attemptCheckout = (currentScore, thrown) => {
 }
 
 /**
+ * Score a visit
+ * @param {object} - Socket for scoring
+ */
+exports.score = async (socket) => {
+    var player = socket.currentPlayer;
+    var thrown = 0;
+    while (thrown < 3 && player.current_score > 0) {
+        if (player.current_score > 170 || BOGEY_NUMBERS.includes(player.current_score)) {
+            var dart = this.attemptThrow(20, 3);
+            socket.emitThrow(dart);
+            await sleep(100);
+            thrown++;
+        } else {
+            var darts = this.attemptCheckout(player.current_score, thrown);
+            for (var i = 0; i < darts.length; i++) {
+                var dart = darts[i];
+                player.current_score -= dart.score * dart.multiplier;
+                socket.emitThrow(dart);
+                await sleep(100);
+                if (player.current_score <= 1) {
+                    break;
+                }
+            }
+            thrown += darts.length;
+        }
+    }
+}
+
+/**
  * Create a new bot with the given skill
  * @param {int} - Skill level of the bot
  */
-exports.new = (skill) => {
+exports.setup = (botSkill) => {
     var hitrateSingle = 0.70;
     var hitrateDouble = 0.13;
     var hitrateTriple = 0.10;
     var missRange = 1;
 
-    switch (skill) {
-        case this.MEDIUM:
+    switch (botSkill) {
+        case skill.MEDIUM:
             hitrateSingle = 0.70;
             hitrateDouble = 0.13;
             hitrateTriple = 0.10;
             missRange = 2;
             break;
-        case this.HARD:
+        case skill.HARD:
             hitrateSingle = 0.70;
             hitrateDouble = 0.13;
             hitrateTriple = 0.10;
             missRange = 2;
             break;
-        case this.PERFECT:
+        case skill.PERFECT:
             hitrateSingle = 1.00;
             hitrateDouble = 1.0;
             hitrateTriple = 1.0;
             missRange = 1;
             break;
-        case this.EASY:
+        case skill.EASY:
         default:
             hitrateSingle = 0.40;
             hitrateDouble = 0.05;
@@ -330,15 +359,17 @@ exports.new = (skill) => {
     }
 
     this.hitrates = {
-        1: hitrateSingle,
-        2: hitrateDouble,
-        3: hitrateTriple,
+        SINGLE: hitrateSingle,
+        DOUBLE: hitrateDouble,
+        TRIPLE: hitrateTriple,
         missRange: missRange
     }
+    debug(`Configured "${botSkill.name}" bot with ${JSON.stringify(this.hitrates)}`);
 }
 
-module.exports = (id) => {
+module.exports = (id, skill) => {
     this.id = id;
     this.dartsThrown = 0;
+    this.setup(skill);
     return this;
 }

@@ -3,9 +3,10 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "start": "node kcapp-bot"
+        "start": "node test"
     },
     "dependencies": {
+        "axios": "^0.19.0",
         "debug": "^4.1.1",
         "decache": "^4.5.1",
         "kcapp-sio-client": "github:kcapp/kcapp-sio-client"
