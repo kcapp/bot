@@ -25,3 +25,10 @@ exports.fromInt = (skill) => {
             return this.EASY;
     }
 }
+
+/**
+ * Get all configured skills
+ */
+exports.all = () => {
+    return [module.exports.EASY, module.exports.MEDIUM, module.exports.HARD, module.exports.PERFECT];
+}
