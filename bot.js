@@ -5,8 +5,11 @@ var sleep = require('./sleep');
 /** Array of Bogey numbers */
 exports.BOGEY_NUMBERS = [169, 168, 166, 165, 163, 162, 159];
 
+/** Multiplier Single */
 const SINGLE = 1;
+/** Multiplier Double */
 const DOUBLE = 2;
+/** Multiplier Triple */
 const TRIPLE = 3;
 
 const BULLSEYE = 25;
@@ -204,19 +207,19 @@ exports.attemptThrow = (number, multiplier) => {
     var score = number;
     var multiplier = multiplier;
 
-    var hitrate = this.hitrates[multiplier];
+    var hitrate = this.bot.hitrates[multiplier];
     if (!isSuccessful(hitrate)) {
         if (multiplier == TRIPLE) {
             // We either hit single, or adjacent
-            if (isSuccessful(this.hitrates[SINGLE])) {
+            if (isSuccessful(this.bot.hitrates[SINGLE])) {
                 multiplier = SINGLE;
             } else {
-                score = getRandom(getAdjacent(BOARD, BOARD.indexOf(score), this.hitrates.missRange));
+                score = getRandom(getAdjacent(BOARD, BOARD.indexOf(score), this.bot.miss_range));
                 multiplier = SINGLE;
             }
         } else if (multiplier === DOUBLE) {
             // We either hit miss, or single
-            if (isSuccessful(1.0 - this.hitrates[DOUBLE])) {
+            if (isSuccessful(1.0 - this.bot.hitrates[DOUBLE])) {
                 score = 0;
                 multiplier = SINGLE;
             } else {
@@ -224,7 +227,7 @@ exports.attemptThrow = (number, multiplier) => {
             }
         } else {
             // We hit adajcent
-            score = getRandom(getAdjacent(BOARD, BOARD.indexOf(score), this.hitrates.missRange));
+            score = getRandom(getAdjacent(BOARD, BOARD.indexOf(score), this.bot.hitrates.miss_range));
             multiplier = getRandom(getAdjacent(BOARD_MULTIPLIERS, BOARD_MULTIPLIERS.indexOf(multiplier), 1));
         }
     }
@@ -327,46 +330,8 @@ exports.score = async (socket) => {
  * @param {int} - Skill level of the bot
  */
 exports.setup = (botSkill) => {
-    var hitrateSingle = 0.70;
-    var hitrateDouble = 0.13;
-    var hitrateTriple = 0.10;
-    var missRange = 1;
-
-    switch (botSkill) {
-        case skill.MEDIUM:
-            hitrateSingle = 0.70;
-            hitrateDouble = 0.13;
-            hitrateTriple = 0.10;
-            missRange = 2;
-            break;
-        case skill.HARD:
-            hitrateSingle = 0.70;
-            hitrateDouble = 0.13;
-            hitrateTriple = 0.10;
-            missRange = 2;
-            break;
-        case skill.PERFECT:
-            hitrateSingle = 1.00;
-            hitrateDouble = 1.0;
-            hitrateTriple = 1.0;
-            missRange = 1;
-            break;
-        case skill.EASY:
-        default:
-            hitrateSingle = 0.40;
-            hitrateDouble = 0.05;
-            hitrateTriple = 0.03;
-            missRange = 3;
-            break;
-    }
-
-    this.hitrates = {
-        1: hitrateSingle,
-        2: hitrateDouble,
-        3: hitrateTriple,
-        missRange: missRange
-    }
-    debug(`Configured "${botSkill.name}" bot with ${JSON.stringify(this.hitrates)}`);
+    this.bot = botSkill;
+    debug(`Configured "${this.bot.name}" bot => ${JSON.stringify(this.bot)}`);
 }
 
 module.exports = (id, skill) => {
