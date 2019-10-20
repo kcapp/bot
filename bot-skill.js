@@ -7,6 +7,11 @@ exports.HARD = { skill: 3, name: 'hard', hitrates: { 1: 0.85, 2: 0.20, 3: 0.30 }
 /** Perfect bot */
 exports.PERFECT = { skill: 4, name: 'perfect', hitrates: { 1: 1.0, 2: 1.0, 3: 1.0 }, miss_range: 1 };
 
+/** Bot type 'skill' */
+exports.TYPE_SKILL = 1;
+/** Bot type 'mock' */
+exports.TYPE_MOCK = 2;
+
 /**
  * Convert the given skill level into a bot
  * @param {int} - Skill leve
