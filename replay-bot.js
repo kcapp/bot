@@ -48,7 +48,6 @@ exports.attemptThrow = (visit, dartsThrown) => {
  */
 exports.score = async (socket) => {
     var visit = this.getVisit();
-    debug(`Throw ${JSON.stringify(dart)}`);
     socket.emitThrow(this.attemptThrow(visit, 0));
     await sleep(100);
     socket.emitThrow(this.attemptThrow(visit, 1));
