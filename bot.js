@@ -285,11 +285,20 @@ exports.attemptCheckout = (currentScore, thrown) => {
 
         debug(`Score is ${currentScore}, trying to checkout`);
         for (var i = thrown; i < 3; i++) {
-            var dart = this.attemptThrow(currentScore / 2, 2);
-            darts.push(dart);
-            currentScore -= dart.score * dart.multiplier;
-            if (currentScore <= 0) {
-                break;
+            if (currentScore % 2 === 0) {
+                var dart = this.attemptThrow(currentScore / 2, 2);
+                darts.push(dart);
+                currentScore -= dart.score * dart.multiplier;
+                if (currentScore <= 0) {
+                    break;
+                }
+            } else {
+                var dart = this.attemptThrow(1, 1);
+                darts.push(dart);
+                currentScore -= dart.score * dart.multiplier;
+                if (currentScore <= 0) {
+                    break;
+                }
             }
         }
     }

@@ -18,19 +18,18 @@ exports.TYPE_MOCK = 2;
  */
 exports.fromInt = (skill) => {
     switch (skill) {
-        case this.EASY.skill:
-            return this.EASY;
-        case this.MEDIUM.skill:
-            return this.MEDIUM
-        case this.HARD.skill:
-            return this.HARD;
-        case this.PERFECT.skill:
-            return this.PERFECT;
+        case module.exports.EASY.skill:
+            return module.exports.EASY;
+        case module.exports.MEDIUM.skill:
+            return module.exports.MEDIUM
+        case module.exports.HARD.skill:
+            return module.exports.HARD;
+        case module.exports.PERFECT.skill:
+            return module.exports.PERFECT;
         default:
-            return this.EASY;
+            return module.exports.EASY;
     }
 }
-
 /**
  * Get all configured skills
  */
