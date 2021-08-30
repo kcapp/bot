@@ -43,7 +43,7 @@ module.exports = (botId, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
         replayLeg: (legId, playerId) => {
             var bot = require('./replay-bot')(botId, playerId, apiURL);
 
-            var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot');
+            var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot', 'http');
              // Make sure we get a separate instance for each leg we connect to...
             decache('kcapp-sio-client/kcapp');
 
