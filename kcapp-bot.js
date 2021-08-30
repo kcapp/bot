@@ -17,7 +17,7 @@ module.exports = (botId, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
         playLeg: (legId, botSkill) => {
             var bot = require('./bot')(botId, botSkill);
 
-            var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot');
+            var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot', 'http');
              // Make sure we get a separate instance for each leg we connect to...
             decache('kcapp-sio-client/kcapp');
             kcapp.connectLegNamespace(legId, (socket) => {
