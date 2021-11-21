@@ -6,7 +6,7 @@
         "start": "node test"
     },
     "dependencies": {
-        "axios": "^0.21.1",
+        "axios": "^0.24.0",
         "debug": "^4.3.2",
         "decache": "^4.6.0",
         "kcapp-sio-client": "github:kcapp/kcapp-sio-client"
