@@ -1,9 +1,9 @@
-var debug = require('debug')('kcapp-bot:main');
-var decache = require('decache');
-var sleep = require('./sleep');
+const debug = require('debug')('kcapp-bot:main');
+const decache = require('decache');
+const sleep = require('./sleep');
 
 async function doScore(socket, bot) {
-    var player = socket.currentPlayer;
+    const player = socket.currentPlayer;
     if (player.player_id === bot.id) {
         await sleep(500);
         await bot.score(socket);
@@ -15,16 +15,16 @@ async function doScore(socket, bot) {
 module.exports = (botId, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
     return {
         playLeg: (legId, botSkill) => {
-            var bot = require('./bot')(botId, botSkill);
+            const bot = require('./bot')(botId, botSkill);
 
-            var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot', 'http');
+            const kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot', 'http');
              // Make sure we get a separate instance for each leg we connect to...
             decache('kcapp-sio-client/kcapp');
             kcapp.connectLegNamespace(legId, (socket) => {
                 debug(`kcapp-bot connected to leg ${legId}`);
 
                 socket.on('score_update', (data) => {
-                    var leg = data.leg;
+                    const leg = data.leg;
                     if (leg.is_finished) {
                         return;
                     } else if (leg.current_player_id !== botId) {
@@ -41,9 +41,9 @@ module.exports = (botId, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
             });
         },
         replayLeg: (legId, playerId) => {
-            var bot = require('./replay-bot')(botId, playerId, apiURL);
+            const bot = require('./replay-bot')(botId, playerId, apiURL);
 
-            var kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot', 'http');
+            const kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot', 'http');
              // Make sure we get a separate instance for each leg we connect to...
             decache('kcapp-sio-client/kcapp');
 
@@ -51,7 +51,7 @@ module.exports = (botId, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
                 debug(`replay-bot connected to leg ${legId}`);
 
                 socket.on('score_update', (data) => {
-                    var leg = data.leg;
+                    const leg = data.leg;
                     if (leg.is_finished) {
                         return;
                     } else if (leg.current_player_id !== botId) {
@@ -67,6 +67,5 @@ module.exports = (botId, sioURL, sioPort, apiURL = 'http://localhost:8001') => {
                 doScore(socket, bot);
             });
         }
-     };
+    };
 };
-

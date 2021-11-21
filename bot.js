@@ -1,6 +1,5 @@
-var debug = require('debug')('kcapp-bot:bot');
-var skill = require('./bot-skill');
-var sleep = require('./sleep');
+const debug = require('debug')('kcapp-bot:bot');
+const sleep = require('./sleep');
 
 /** Array of Bogey numbers */
 exports.BOGEY_NUMBERS = [169, 168, 166, 165, 163, 162, 159];
@@ -170,9 +169,9 @@ function isEqual(dart1, dart2) {
  * @param {int} number - Number of adjecent elements to get
  */
 function getAdjacent(list, idx, number) {
-    var newList = [];
+    const newList = [];
 
-    for (var i = 1; i <= number; i++) {
+    for (let i = 1; i <= number; i++) {
         if (idx - i < 0) {
             newList.push(list[list.length + idx - i]);
         } else {
@@ -204,10 +203,10 @@ function isSuccessful(targetPercentage) {
 exports.attemptThrow = (number, multiplier) => {
     this.dartsThrown++;
 
-    var score = number;
-    var multiplier = multiplier;
+    let score = number;
+    let multiplier = multiplier;
 
-    var hitrate = this.bot.hitrates[multiplier];
+    const hitrate = this.bot.hitrates[multiplier];
     if (!isSuccessful(hitrate)) {
         if (multiplier == TRIPLE) {
             // We either hit single, or adjacent
@@ -231,7 +230,7 @@ exports.attemptThrow = (number, multiplier) => {
             multiplier = getRandom(getAdjacent(BOARD_MULTIPLIERS, BOARD_MULTIPLIERS.indexOf(multiplier), 1));
         }
     }
-    var dart = { score: score, multiplier: multiplier };
+    const dart = { score: score, multiplier: multiplier };
     debug(`Throw ${JSON.stringify(dart)}`);
     return dart;
 }
@@ -243,13 +242,13 @@ exports.attemptThrow = (number, multiplier) => {
  * @param {int} - Number of darts thrown
  */
 exports.attemptCheckout = (currentScore, thrown) => {
-    var darts = [];
+    const darts = [];
     if (currentScore > 40) {
-        var checkout = CHECKOUT_GUIDE[currentScore];
+        const checkout = CHECKOUT_GUIDE[currentScore];
         if (3 - thrown >= checkout.length) {
-            debug("Trying for a big checkout: " + currentScore);
-            for (var i = thrown; i < checkout.length; i++) {
-                var dart = this.attemptThrow(checkout[i].score, checkout[i].multiplier);
+            debug(`Trying for a big checkout: ${currentScore}`);
+            for (let i = thrown; i < checkout.length; i++) {
+                const dart = this.attemptThrow(checkout[i].score, checkout[i].multiplier);
                 darts.push(dart);
                 if (!isEqual(dart, checkout[i])) {
                     break;
@@ -263,8 +262,8 @@ exports.attemptCheckout = (currentScore, thrown) => {
             debug("We don't have enough darts, just score");
             // We cannot complete a perfect checkout, so lets just score some points
             // TODO improve
-            for (var i = thrown; i < 3; i++) {
-                var dart = this.attemptThrow(20, 1);
+            for (let i = thrown; i < 3; i++) {
+                const dart = this.attemptThrow(20, 1);
                 darts.push(dart);
                 currentScore -= dart.score * dart.multiplier;
                 if (currentScore <= 1) {
@@ -275,7 +274,7 @@ exports.attemptCheckout = (currentScore, thrown) => {
     } else {
         // Only attempt checkout if we have an even number
         while (currentScore % 2 !== 0) {
-            var dart = this.attemptThrow(1, 1);
+            const dart = this.attemptThrow(1, 1);
             darts.push(dart);
             currentScore -= dart.score * dart.multiplier;
             if (currentScore <= 0) {
@@ -284,16 +283,16 @@ exports.attemptCheckout = (currentScore, thrown) => {
         }
 
         debug(`Score is ${currentScore}, trying to checkout`);
-        for (var i = thrown; i < 3; i++) {
+        for (let i = thrown; i < 3; i++) {
             if (currentScore % 2 === 0) {
-                var dart = this.attemptThrow(currentScore / 2, 2);
+                const dart = this.attemptThrow(currentScore / 2, 2);
                 darts.push(dart);
                 currentScore -= dart.score * dart.multiplier;
                 if (currentScore <= 0) {
                     break;
                 }
             } else {
-                var dart = this.attemptThrow(1, 1);
+                const dart = this.attemptThrow(1, 1);
                 darts.push(dart);
                 currentScore -= dart.score * dart.multiplier;
                 if (currentScore <= 0) {
@@ -310,18 +309,18 @@ exports.attemptCheckout = (currentScore, thrown) => {
  * @param {object} - Socket for scoring
  */
 exports.score = async (socket) => {
-    var player = socket.currentPlayer;
-    var thrown = 0;
+    const player = socket.currentPlayer;
+    let thrown = 0;
     while (thrown < 3 && player.current_score > 0) {
         if (player.current_score > 170 || this.BOGEY_NUMBERS.includes(player.current_score)) {
-            var dart = this.attemptThrow(20, 3);
+            const dart = this.attemptThrow(20, 3);
             socket.emitThrow(dart);
             await sleep(100);
             thrown++;
         } else {
-            var darts = this.attemptCheckout(player.current_score, thrown);
-            for (var i = 0; i < darts.length; i++) {
-                var dart = darts[i];
+            const darts = this.attemptCheckout(player.current_score, thrown);
+            for (let i = 0; i < darts.length; i++) {
+                const dart = darts[i];
                 player.current_score -= dart.score * dart.multiplier;
                 socket.emitThrow(dart);
                 await sleep(100);
