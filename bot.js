@@ -204,8 +204,6 @@ exports.attemptThrow = (number, multiplier) => {
     this.dartsThrown++;
 
     let score = number;
-    let multiplier = multiplier;
-
     const hitrate = this.bot.hitrates[multiplier];
     if (!isSuccessful(hitrate)) {
         if (multiplier == TRIPLE) {

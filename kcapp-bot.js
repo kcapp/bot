@@ -16,10 +16,9 @@ async function doScore(socket, bot) {
         await sleep(1000);
         socket.emitVisit();
     }
-    debug(`No longer first throw`);
     firstThrow = false;
 }
-module.exports = (botId, sioURL, sioPort = 3001, apiURL = 'http://localhost:8001', protocol = 'http') => {
+module.exports = (botId, sioURL, sioPort = 3000, apiURL = 'http://localhost:8001', protocol = 'http') => {
     return {
         playLeg: (legId, botSkill) => {
             const bot = require('./bot')(botId, botSkill);
