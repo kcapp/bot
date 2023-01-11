@@ -4,12 +4,14 @@ const sleep = require('./sleep');
 
 /**
  * Create a new replay-bot which will replay a random leg for the given player
- * @param {int} - Skill level of the bot
+ * @param {int} - PlayerID of the given player
  * @param {string} - Base URL of kcapp API
+ * @param {int} - Starting score of the leg
  */
-exports.setup = (playerId, apiURL) => {
+exports.setup = (playerId, apiURL, startingScore) => {
+    debug(`${playerId}, ${apiURL}, ${startingScore}`)
     debug(`Requesting leg to replay for ${playerId}`)
-    axios.get(`${apiURL}/player/${playerId}/random/${301}`)
+    axios.get(`${apiURL}/player/${playerId}/random/${startingScore}`)
         .then(response => {
             const visits = response.data;
             this.visits = visits;
@@ -56,9 +58,9 @@ exports.score = async (socket) => {
     await sleep(100);
 }
 
-module.exports = (id, playerId, apiURL) => {
+module.exports = (id, playerId, apiURL, startingScore) => {
     this.id = id;
-    this.setup(playerId, apiURL);
+    this.setup(playerId, apiURL, startingScore);
     this.visits = [];
     return this;
 }
