@@ -8,14 +8,13 @@ const sleep = require('./sleep');
  * @param {string} - Base URL of kcapp API
  * @param {int} - Starting score of the leg
  */
-exports.setup = (playerId, apiURL, startingScore) => {
-    debug(`${playerId}, ${apiURL}, ${startingScore}`)
-    debug(`Requesting leg to replay for ${playerId}`)
+exports.setup = (playerId, legId, apiURL, startingScore) => {
+    debug(`[${legId}] Requesting leg to replay for ${playerId}`)
     axios.get(`${apiURL}/player/${playerId}/random/${startingScore}`)
         .then(response => {
             const visits = response.data;
             this.visits = visits;
-            debug(`Configured bot for leg ${visits[0].leg_id}`);
+            debug(`[${legId}] Configured bot for leg ${visits[0].leg_id}`);
         }).catch(error => {
             debug(`Error when getting match: ${error}`);
         });
@@ -40,7 +39,7 @@ exports.attemptThrow = (visit, dartsThrown) => {
     } else if (dartsThrown == 2) {
         dart = { score: visit.third_dart.value, multiplier: visit.third_dart.multiplier };
     }
-    debug(`Throw ${JSON.stringify(dart)}`);
+    debug(`[${this.legId}] Throw ${JSON.stringify(dart)}`);
     return dart;
 }
 
@@ -58,9 +57,17 @@ exports.score = async (socket) => {
     await sleep(100);
 }
 
-module.exports = (id, playerId, apiURL, startingScore) => {
+/**
+ * @param {int} - Bot ID
+ * @param {int} - Leg ID
+ * @param {int} - Player ID
+ * @param {string} - kcapp API URL
+ * @param {int} - Starting score of leg
+ */
+module.exports = (id, legId, playerId, apiURL, startingScore) => {
     this.id = id;
-    this.setup(playerId, apiURL, startingScore);
+    this.legId = legId;
+    this.setup(playerId, legId, apiURL, startingScore);
     this.visits = [];
     return this;
 }
