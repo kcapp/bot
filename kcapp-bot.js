@@ -47,8 +47,8 @@ module.exports = (botId, sioURL, sioPort = 3000, apiURL = 'http://localhost:8001
                 doScore(socket, bot);
             });
         },
-        replayLeg: (legId, playerId) => {
-            const bot = require('./replay-bot')(botId, playerId, apiURL);
+        replayLeg: (legId, playerId, startingScore = 301) => {
+            const bot = require('./replay-bot')(botId, playerId, apiURL, startingScore);
 
             const kcapp = require('kcapp-sio-client/kcapp')(sioURL, sioPort, 'kcapp-bot', protocol);
              // Make sure we get a separate instance for each leg we connect to...
