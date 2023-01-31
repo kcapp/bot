@@ -224,7 +224,7 @@ exports.attemptThrow = (number, multiplier) => {
             }
         } else {
             // We hit adajcent
-            score = getRandom(getAdjacent(BOARD, BOARD.indexOf(score), this.bot.hitrates.miss_range));
+            score = getRandom(getAdjacent(BOARD, BOARD.indexOf(score), this.bot.miss_range));
             multiplier = getRandom(getAdjacent(BOARD_MULTIPLIERS, BOARD_MULTIPLIERS.indexOf(multiplier), 1));
         }
     }
