@@ -14,6 +14,7 @@ exports.setup = (playerId, legId, apiURL, startingScore) => {
         .then(response => {
             const visits = response.data;
             this.visits = visits;
+            this.lastVisitIndex = 0;
             debug(`[${legId}] Configured bot for leg ${visits[0].leg_id}`);
         }).catch(error => {
             debug(`Error when getting match: ${error}`);
@@ -24,7 +25,14 @@ exports.setup = (playerId, legId, apiURL, startingScore) => {
  * Get the next visit to use for scoring
  */
 exports.getVisit = () => {
-    return this.visits.shift();
+    return this.visits[this.lastVisitIndex++];
+}
+
+/**
+ * Undo the last visit
+ */
+exports.undoVisit = () => {
+    this.lastVisitIndex--;
 }
 
 /**
