@@ -34,7 +34,7 @@ module.exports = (botId, sioURL, sioPort = 3000, apiURL = 'http://localhost:8001
                     const leg = data.leg;
                     if (leg.is_finished) {
                         return;
-                    } else if (leg.current_player_id !== botId) {
+                    } else if (leg.current_player_id !== botId || data.skip_bot_rethrow) {
                         debug(`[${legId}] Not our turn, waiting...`);
                     } else {
                         doScore(socket, bot);
