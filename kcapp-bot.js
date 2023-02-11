@@ -18,6 +18,22 @@ async function doScore(socket, bot) {
     }
     firstThrow = false;
 }
+
+async function handleScoreUpdate(socket, data, bot) {
+    const leg = data.leg;
+    if (leg.is_finished) {
+        return;
+    } else if (leg.current_player_id !== bot.id) {
+        debug(`[${leg.id}] Not our turn, waiting...`);
+    } else if (data.is_undo) {
+        debug(`[${leg.id}] Recevied undo visit, forwarding`);
+        bot.undoVisit();
+        socket.emit('undo_visit', {});
+    } else {
+        doScore(socket, bot);
+    }
+}
+
 module.exports = (botId, sioURL, sioPort = 3000, apiURL = 'http://localhost:8001', protocol = 'http') => {
     return {
         playLeg: (legId, botSkill) => {
@@ -31,14 +47,7 @@ module.exports = (botId, sioURL, sioPort = 3000, apiURL = 'http://localhost:8001
                 firstThrow = true;
 
                 socket.on('score_update', (data) => {
-                    const leg = data.leg;
-                    if (leg.is_finished) {
-                        return;
-                    } else if (leg.current_player_id !== botId) {
-                        debug(`[${legId}] Not our turn, waiting...`);
-                    } else {
-                        doScore(socket, bot);
-                    }
+                    handleScoreUpdate(socket, data, bot);
                 });
                 socket.on('leg_finished', (data) => {
                     debug(`[${legId}] Leg is finished`);
@@ -58,14 +67,7 @@ module.exports = (botId, sioURL, sioPort = 3000, apiURL = 'http://localhost:8001
                 firstThrow = true;
 
                 socket.on('score_update', (data) => {
-                    const leg = data.leg;
-                    if (leg.is_finished) {
-                        return;
-                    } else if (leg.current_player_id !== botId) {
-                        debug(`[${legId}] Not our turn, waiting...`);
-                    } else {
-                        doScore(socket, bot);
-                    }
+                    handleScoreUpdate(socket, data, bot);
                 });
                 socket.on('leg_finished', (data) => {
                     debug(`[${legId}] Leg is finished`);

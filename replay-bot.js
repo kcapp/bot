@@ -24,7 +24,17 @@ exports.setup = (playerId, legId, apiURL, startingScore) => {
  * Get the next visit to use for scoring
  */
 exports.getVisit = () => {
-    return this.visits.shift();
+    const visit = this.visits.shift();
+    this.visitsThrown.push(visit);
+    return visit;
+}
+
+/**
+ * Undo the previous visit
+ */
+exports.undoVisit = () => {
+    const visit = this.visitsThrown.pop()
+    this.visits.unshift(visit);
 }
 
 /**
@@ -69,5 +79,6 @@ module.exports = (id, legId, playerId, apiURL, startingScore) => {
     this.legId = legId;
     this.setup(playerId, legId, apiURL, startingScore);
     this.visits = [];
+    this.visitsThrown = [];
     return this;
 }

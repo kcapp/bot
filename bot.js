@@ -195,14 +195,19 @@ function isSuccessful(targetPercentage) {
 }
 
 /**
+ * Undo the previous visit
+ */
+exports.undoVisit = () => {
+    this.totalVisits--;
+}
+
+/**
  * Attempt a throw at the given number
  *
  * @param {int} number - Number we are aiming for
  * @param {int} multiplier - Multiplier we are aiming for
  */
 exports.attemptThrow = (number, multiplier) => {
-    this.dartsThrown++;
-
     let score = number;
     const hitrate = this.bot.hitrates[multiplier];
     if (!isSuccessful(hitrate)) {
@@ -307,6 +312,19 @@ exports.attemptCheckout = (currentScore, thrown) => {
  * @param {object} - Socket for scoring
  */
 exports.score = async (socket) => {
+    if (this.visits[this.totalVisits]) {
+        const visit = this.visits[this.totalVisits];
+        // We have a previous visit, just re use it
+        socket.emitThrow(visit[0]);
+        await sleep(100);
+        socket.emitThrow(visit[1]);
+        await sleep(100);
+        socket.emitThrow(visit[2]);
+        await sleep(100);
+        this.totalVisits++;
+        return;
+    }
+
     const player = socket.currentPlayer;
     let thrown = 0;
     while (thrown < 3 && player.current_score > 0) {
@@ -329,6 +347,8 @@ exports.score = async (socket) => {
             thrown += darts.length;
         }
     }
+    this.totalVisits++;
+    this.visits.push(socket.throws);
 }
 
 /**
@@ -342,7 +362,8 @@ exports.setup = (botSkill) => {
 
 module.exports = (id, skill) => {
     this.id = id;
-    this.dartsThrown = 0;
     this.setup(skill);
+    this.visits = [];
+    this.totalVisits = 0;
     return this;
 }
