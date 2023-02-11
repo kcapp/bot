@@ -59,12 +59,21 @@ exports.attemptThrow = (visit, dartsThrown) => {
  */
 exports.score = async (socket) => {
     const visit = this.getVisit();
-    socket.emitThrow(this.attemptThrow(visit, 0));
+    const first = this.attemptThrow(visit, 0);
+    socket.emitThrow(first);
     await sleep(100);
-    socket.emitThrow(this.attemptThrow(visit, 1));
-    await sleep(100);
-    socket.emitThrow(this.attemptThrow(visit, 2));
-    await sleep(100);
+    const second = this.attemptThrow(visit, 1);
+    if (second.score) {
+        console.log(second);
+        socket.emitThrow(second);
+        await sleep(100);
+    }
+    const third = this.attemptThrow(visit, 2);
+    if (third.score) {
+        console.log(third);
+        socket.emitThrow(third);
+        await sleep(100);
+    }
 }
 
 /**
