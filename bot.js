@@ -287,21 +287,23 @@ exports.attemptCheckout = (currentScore, thrown) => {
             }
         }
 
-        debug(`Score is ${currentScore}, trying to checkout`);
-        for (let i = thrown; i < 3; i++) {
-            if (currentScore % 2 === 0) {
-                const dart = this.attemptThrow(currentScore / 2, 2);
-                darts.push(dart);
-                currentScore -= dart.score * dart.multiplier;
-                if (currentScore <= 0) {
-                    break;
-                }
-            } else {
-                const dart = this.attemptThrow(1, 1);
-                darts.push(dart);
-                currentScore -= dart.score * dart.multiplier;
-                if (currentScore <= 0) {
-                    break;
+        if (currentScore > 1) {
+            debug(`Score is ${currentScore}, trying to checkout`);
+            for (let i = thrown; i < 3; i++) {
+                if (currentScore % 2 === 0) {
+                    const dart = this.attemptThrow(currentScore / 2, 2);
+                    darts.push(dart);
+                    currentScore -= dart.score * dart.multiplier;
+                    if (currentScore <= 0) {
+                        break;
+                    }
+                } else {
+                    const dart = this.attemptThrow(1, 1);
+                    darts.push(dart);
+                    currentScore -= dart.score * dart.multiplier;
+                    if (currentScore <= 0) {
+                        break;
+                    }
                 }
             }
         }
