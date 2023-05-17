@@ -4,6 +4,8 @@ const sleep = require('./sleep');
 /** Array of Bogey numbers */
 exports.BOGEY_NUMBERS = [169, 168, 166, 165, 163, 162, 159];
 
+/** Miss */
+const MISS = 0;
 /** Multiplier Single */
 const SINGLE = 1;
 /** Multiplier Double */
@@ -14,10 +16,10 @@ const TRIPLE = 3;
 const BULLSEYE = 25;
 
 /** Array holding all values of the dart board in a circular order */
-const BOARD = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
+const BOARD = [ 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5 ];
 
 /** Array holding multiplier values of the dart board in a circular order */
-const BOARD_MULTIPLIERS = [SINGLE, TRIPLE, SINGLE, DOUBLE];
+const BOARD_MULTIPLIERS = [ SINGLE, TRIPLE, SINGLE, DOUBLE ];
 
 /** Preferred checkouts for different numbers */
 const CHECKOUT_GUIDE = {
@@ -164,9 +166,9 @@ function isEqual(dart1, dart2) {
 
 /**
  * Get adjacent elements from the list of the given idx
- * @param {array} list - List of get adjecent elements from
- * @param {int} idx - Index of element to get adjecent of
- * @param {int} number - Number of adjecent elements to get
+ * @param {array} list - List to get adjecent elements from
+ * @param {int} idx - Index of element to get adjacent from
+ * @param {int} number - Number of adjacent elements to get
  */
 function getAdjacent(list, idx, number) {
     const newList = [];
@@ -221,7 +223,7 @@ exports.attemptThrow = (number, multiplier) => {
             }
         } else if (multiplier === DOUBLE) {
             // We either hit miss, or single
-            if (isSuccessful(1.0 - this.bot.hitrates[DOUBLE])) {
+            if (isSuccessful(this.bot.hitrates[MISS])) {
                 score = 0;
                 multiplier = SINGLE;
             } else {
