@@ -5,12 +5,12 @@ const sleep = require('./sleep');
 let firstThrow = true;
 
 async function doScore(socket, bot) {
-    if (firstThrow) {
-        debug(`Waiting because of first throw`);
-        await sleep(5000); // wait for page to load
-    }
     const player = socket.currentPlayer;
     if (player.player_id === bot.id) {
+        if (firstThrow) {
+            debug(`Waiting because of first throw`);
+            await sleep(5000); // wait for page to load
+        }
         await sleep(500);
         await bot.score(socket);
         await sleep(1000);
